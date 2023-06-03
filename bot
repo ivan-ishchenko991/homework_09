@@ -1,0 +1,72 @@
+import re
+
+numbers = {}
+
+while True:
+    user_command = input('Write a command: ')
+
+    def input_error(func):
+        def inner(*args):
+            try:
+                return func(*args)
+            except (KeyError, ValueError, IndexError):
+                print('\nCommand was entered incorrectly, please try again.\n') 
+        return inner
+
+    greeting = re.compile('hello', flags=re.IGNORECASE)
+    add = re.compile('add', flags=re.IGNORECASE)
+    change = re.compile('change', flags=re.IGNORECASE)
+    phone = re.compile('phone', flags=re.IGNORECASE)
+    show_all = re.compile('show all', flags=re.IGNORECASE)
+    goodbye = re.compile(r'(good bye|close|exit)', flags=re.IGNORECASE)
+
+    # name_pattern = re.compile(r'[a-zA-Z]+')
+    # number_pattern = re.compile(r"(?:\+380\(\d{2}\)\d{3}-\d{1}-\d{3}|\+380\(\d{2}\)\d{3}-\d{2}-\d{2})")
+    
+    @input_error
+    def hello():
+        print("\nHow can i help you?\n")
+    
+    @input_error
+    def adding(command):
+        arguments = command.split(' ')
+        name = arguments[1]
+        number = arguments[2]
+        numbers[name] = number
+        print('\nCompleted!\n')
+    
+    @input_error
+    def changing(command):
+        arguments = command.split(' ')
+        name = arguments[1]
+        number = arguments[2]
+        numbers[name] = number
+        print('\nCompleted!\n')
+    
+    @input_error
+    def show_phone(command):
+        arguments = command.split(' ')
+        name = arguments[1]
+        for k, v in numbers.items():
+            if k == name:
+                print(f'\n{k}: {v}\n')
+    
+    @input_error
+    def show_all_phones():
+        for k, v in numbers.items():
+            print(f'{k}: {v}')
+    
+
+    if re.match(greeting, user_command):
+        hello()
+    elif re.match(add, user_command):
+        adding(user_command)
+    elif re.match(change, user_command):
+        changing(user_command)
+    elif re.match(phone, user_command):
+        show_phone(user_command)
+    elif re.match(show_all, user_command):
+        show_all_phones()
+    elif re.match(goodbye, user_command):
+        print('Good bye!')
+        break
